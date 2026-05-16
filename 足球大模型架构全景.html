@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>足球大模型架构全景</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0e17; color: #e0e6f0; font-family: 'Segoe UI', system-ui, sans-serif; padding: 30px; }
+h1 { text-align: center; font-size: 28px; color: #00d4ff; margin-bottom: 6px; letter-spacing: 2px; }
+.subtitle { text-align: center; color: #8892b0; font-size: 13px; margin-bottom: 30px; }
+.arch { display: flex; flex-direction: column; align-items: center; gap: 0; max-width: 1200px; margin: 0 auto; }
+
+/* 层级容器 */
+.layer { width: 100%; margin-bottom: 4px; }
+.layer-title { background: linear-gradient(135deg, #1a2340, #0f1a2e); padding: 10px 20px; border-radius: 8px 8px 0 0; font-size: 14px; font-weight: 700; color: #64ffda; border: 1px solid #1e3a5f; border-bottom: none; letter-spacing: 1px; }
+.layer-body { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; background: #0d1525; border: 1px solid #1e3a5f; border-top: none; border-radius: 0 0 8px 8px; min-height: 60px; }
+
+/* 组件卡片 */
+.comp { background: linear-gradient(145deg, #151f35, #1a2640); border: 1px solid #2a3f5f; border-radius: 8px; padding: 10px 14px; flex: 0 0 auto; max-width: 220px; position: relative; transition: all 0.2s; }
+.comp:hover { border-color: #00d4ff; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,212,255,0.15); }
+.comp-name { font-size: 12px; font-weight: 700; color: #ccd6f6; margin-bottom: 2px; }
+.comp-desc { font-size: 10px; color: #8892b0; line-height: 1.3; }
+.comp-status { position: absolute; top: 4px; right: 6px; font-size: 10px; }
+
+/* 连接线区域 */
+.connector { display: flex; justify-content: center; align-items: center; height: 28px; color: #2a4a6a; font-size: 11px; letter-spacing: 2px; }
+.connector-line { width: 2px; height: 100%; background: linear-gradient(to bottom, #2a4a6a, #1e3a5f); }
+.connector-text { margin: 0 12px; background: #0a0e17; padding: 0 10px; }
+
+/* 颜色标记 */
+.highlight { border-color: #00d4ff; }
+.dev { border-color: #ffd700; }
+.api { border-color: #00e676; }
+.data { border-color: #ff6b6b; }
+
+.l1 { border-left: 3px solid #ffd700; }
+.l2 { border-left: 3px solid #00e676; }
+.l3 { border-left: 3px solid #00d4ff; }
+.l4 { border-left: 3px solid #ff6b6b; }
+
+.tag { display: inline-block; font-size: 8px; padding: 1px 5px; border-radius: 3px; margin-right: 3px; }
+.tag-green { background: #003300; color: #00e676; border: 1px solid #005500; }
+.tag-blue { background: #002244; color: #00d4ff; border: 1px solid #003366; }
+.tag-gold { background: #332200; color: #ffd700; border: 1px solid #554400; }
+.tag-red { background: #330000; color: #ff6b6b; border: 1px solid #550000; }
+
+.footer { text-align: center; margin-top: 30px; color: #4a5a7a; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<h1>⚽ 足球大模型架构全景</h1>
+<p class="subtitle">24层架构 · 10核心引擎 · 23数据源 · 17项修复 · 全自动闭环</p>
+
+<div class="arch">
+
+<!-- ============ 第1层：数据采集 ============ -->
+<div class="layer">
+<div class="layer-title">🌐 第1层 · 数据采集层 (23个数据源)</div>
+<div class="layer-body">
+  <div class="comp api"><div class="comp-name"><span class="tag tag-green">API</span> football-data.org</div><div class="comp-desc">5大联赛赛程/赛果/积分榜</div></div>
+  <div class="comp api"><div class="comp-name"><span class="tag tag-green">API</span> The Odds API</div><div class="comp-desc">51足球联赛/实时赔率</div></div>
+  <div class="comp data"><div class="comp-name"><span class="tag tag-blue">免费</span> ESPN公开API</div><div class="comp-desc">15联赛赛程+积分榜 JSON</div></div>
+  <div class="comp data"><div class="comp-name"><span class="tag tag-blue">免费</span> OpenLigaDB</div><div class="comp-desc">德系306场+进球+射手</div></div>
+  <div class="comp data"><div class="comp-name"><span class="tag tag-blue">免费</span> ScoreBat</div><div class="comp-desc">50场全球比赛+视频</div></div>
+  <div class="comp data"><div class="comp-name"><span class="tag tag-blue">免费</span> football-data.co.uk</div><div class="comp-desc">16联赛CSV/含B365赔率</div></div>
+  <div class="comp data"><div class="comp-name"><span class="tag tag-blue">免费</span> understat</div><div class="comp-desc">xG预期进球(需JS)</div></div>
+  <div class="comp"><div class="comp-name"><span class="tag tag-gold">网页</span> 500.com</div><div class="comp-desc">41场竞彩SP/让球/欧赔</div></div>
+  <div class="comp"><div class="comp-name"><span class="tag tag-gold">网页</span> oddsportal</div><div class="comp-desc">全球100+公司赔率对比</div></div>
+  <div class="comp"><div class="comp-name"><span class="tag tag-gold">网页</span> 懂球帝/新浪/Goal</div><div class="comp-desc">伤病/转会/新闻</div></div>
+</div>
+</div>
+
+<div class="connector"><span class="connector-text">▼ 23源自动选路·失败切换 ▼</span></div>
+
+<!-- ============ 第2层：爬虫+验证 ============ -->
+<div class="layer">
+<div class="layer-title">🕷️ 第2层 · 数据爬虫+交叉验证层</div>
+<div class="layer-body">
+  <div class="comp highlight">
+    <div class="comp-name">🔄 sporttery_auto_scraper.py</div>
+    <div class="comp-desc">4路自动探测+自学习优选路线</div>
+  </div>
+  <div class="comp highlight">
+    <div class="comp-name">🔍 multi_source_validator_v2.py</div>
+    <div class="comp-desc">23源交叉验证/自动比对/异常告警</div>
+  </div>
+  <div class="comp highlight">
+    <div class="comp-name">📦 free_data_aggregator.py</div>
+    <div class="comp-desc">10免费源/6970条/一键聚合</div>
+  </div>
+  <div class="comp highlight">
+    <div class="comp-name">💾 sporttery_auto_scraper.py</div>
+    <div class="comp-desc">自动驾驶爬虫+自学习引擎</div>
+  </div>
+</div>
+</div>
+
+<div class="connector"><span class="connector-text">▼ 数据清洗·格式归一化 ▼</span></div>
+
+<!-- ============ 第3层：数据库 ============ -->
+<div class="layer">
+<div class="layer-title">🗄️ 第3层 · 数据存储层 (45表 / 123,290条)</div>
+<div class="layer-body">
+  <div class="comp data"><div class="comp-name">historical_matches</div><div class="comp-desc">25,451场历史比赛</div></div>
+  <div class="comp data"><div class="comp-name">team_stats</div><div class="comp-desc">489队攻防数据</div></div>
+  <div class="comp data"><div class="comp-name">xg_matches</div><div class="comp-desc">5,000条xG数据</div></div>
+  <div class="comp data"><div class="comp-name">elo_ratings</div><div class="comp-desc">576队ELO评分</div></div>
+  <div class="comp data"><div class="comp-name">player_injuries</div><div class="comp-desc">465条伤病记录</div></div>
+  <div class="comp data"><div class="comp-name">predictions</div><div class="comp-desc">572条/0重复预测</div></div>
+  <div class="comp data"><div class="comp-name">calibration</div><div class="comp-desc">7档信心校准表</div></div>
+  <div class="comp data"><div class="comp-name">api_keys</div><div class="comp-desc">7条已注册API</div></div>
+</div>
+</div>
+
+<div class="connector"><span class="connector-text">▼ BayesianEngine 推理入口 ▼</span></div>
+
+<!-- ============ 第4层：推理引擎 ============ -->
+<div class="layer">
+<div class="layer-title">🧠 第4层 · 核心推理引擎层</div>
+<div class="layer-body">
+  <div class="comp highlight" style="flex: 0 0 260px; border: 2px solid #00d4ff;">
+    <div class="comp-name">⚡ BayesianEngine (1025行)</div>
+    <div class="comp-desc">
+      <b>第1层 · 概率融合</b><br>
+      M1赔率 + M2泊松 + xG先验 + ELO + 联赛先验 + 近期状态<br>
+      → InferenceGraph 因子图消息传递 (1-4轮收敛)<br>
+      <b>第2层 · 时间衰减</b><br>
+      w=exp(-0.006t) + season_weight=1.0<br>
+      <b>第3层 · 情绪修正</b><br>
+      SP诱导检测 + 公众偏离度 + draw_close标记
+    </div>
+  </div>
+  <div class="comp l1">
+    <div class="comp-name">📊 M1赔率层</div>
+    <div class="comp-desc">市场赔率反推概率<br>信念动态: 0.45~0.75</div>
+  </div>
+  <div class="comp l1">
+    <div class="comp-name">📈 M2泊松层</div>
+    <div class="comp-desc">λ=0.79×历史+0.21×SP<br>比分/半全场/大小球</div>
+  </div>
+  <div class="comp l1">
+    <div class="comp-name">🎯 xG先验层</div>
+    <div class="comp-desc">指数衰减平率公式<br>旧数据降权0.30</div>
+  </div>
+  <div class="comp l1">
+    <div class="comp-name">⚖️ ELO时序层</div>
+    <div class="comp-desc">576队评分/K=63自学习<br>融合权重15%</div>
+  </div>
+  <div class="comp l1">
+    <div class="comp-name">🏁 联赛先验层</div>
+    <div class="comp-desc">7大家族/信心缩放<br>25,451场历史基准</div>
+  </div>
+</div>
+</div>
+
+<div class="connector"><span class="connector-text">▼ 因子图消息传递·KL对齐度 ▼</span></div>
+
+<!-- ============ 第5层：辅助模型 ============ -->
+<div class="layer">
+<div class="layer-title">🧩 第5层 · 辅助维度模型层</div>
+<div class="layer-body">
+  <div class="comp l2">
+    <div class="comp-name">🛡️ 让球ML模型</div>
+    <div class="comp-desc">25,231样本/6特征<br>AUC=0.7858/外部ML</div>
+  </div>
+  <div class="comp l2">
+    <div class="comp-name">🔄 半全场马尔可夫</div>
+    <div class="comp-desc">154场半场数据<br>开球时间修正</div>
+  </div>
+  <div class="comp l2">
+    <div class="comp-name">📏 大小球模型</div>
+    <div class="comp-desc">泊松分布+联赛基准<br>比分交叉验证</div>
+  </div>
+  <div class="comp l2">
+    <div class="comp-name">🔍 SP诱导检测</div>
+    <div class="comp-desc">favorite-longshot bias<br>偏离阈值8%/12%</div>
+  </div>
+  <div class="comp l2">
+    <div class="comp-name">📖 向量知识库</div>
+    <div class="comp-desc">FAISS 384维语义检索<br>34条教训/关键词兜底</div>
+  </div>
+  <div class="comp l2">
+    <div class="comp-name">⚠️ draw_close</div>
+    <div class="comp-desc">平局距头马<13%+平率>24%<br>→标记/不投</div>
+  </div>
+</div>
+</div>
+
+<div class="connector"><span class="connector-text">▼ 交叉验证·冲突消除 ▼</span></div>
+
+<!-- ============ 第6层：输出 ============ -->
+<div class="layer">
+<div class="layer-title">📤 第6层 · 输出交付层</div>
+<div class="layer-body">
+  <div class="comp l3">
+    <div class="comp-name">📑 gen_full_format.py</div>
+    <div class="comp-desc">xlsx模板/3Sheet/10种让球/5种半全场<br>方向标准化/理由5维度</div>
+  </div>
+  <div class="comp l3">
+    <div class="comp-name">🔎 scan_xlsx.py</div>
+    <div class="comp-desc">全表一致性扫描<br>方向vs比分vs半全场vs大小球vs让球</div>
+  </div>
+  <div class="comp l3">
+    <div class="comp-name">💬 微信推送</div>
+    <div class="comp-desc">MEDIA标签/cron deliver<br>21:00/22:00/09:30</div>
+  </div>
+  <div class="comp l3">
+    <div class="comp-name">📘 复盘入总表</div>
+    <div class="comp-desc">sync_ht_scores→append_review<br>5类命中判定/自动写入</div>
+  </div>
+  <div class="comp l3">
+    <div class="comp-name">🐙 GitHub同步</div>
+    <div class="comp-desc">sync_github.sh自动推送<br>每日推荐/复盘/总表</div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<!-- 修复记录 -->
+<div style="max-width: 1200px; margin: 30px auto 0;">
+<div class="layer-title" style="border-radius: 8px; text-align: center;">🔧 已修复17项缺陷 · 2026-05-16</div>
+<div class="layer-body" style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; border-radius: 0 0 8px 8px;">
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 信心塌缩</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ M1动态信念</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ xG公式修正</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 半全场多样性</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 让球差异化</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 让球穿盘bug</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 平局方向处理</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ DB去重1325条</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ FAISS路径</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ API双注册</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 免费源集成</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 交叉验证系统</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 语法检查</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ xlsx扫描0冲突</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ GitHub同步</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ xG旧数据降权</span>
+  <span style="background:#003300;color:#00e676;padding:3px 10px;border-radius:12px;font-size:11px;">✅ 多源交叉验证</span>
+</div>
+</div>
+
+<p class="footer">足球大模型 v14.1 · 6层架构 · 23数据源 · 10核心引擎 · 17项修复 · 全自动闭环</p>
+</body>
+</html>
